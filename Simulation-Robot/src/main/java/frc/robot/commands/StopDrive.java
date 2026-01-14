@@ -1,0 +1,23 @@
+package frc.robot.commands;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Drivetrain;
+
+public class StopDrive extends Command {
+    Drivetrain dt;
+
+    public StopDrive(Drivetrain dt) {
+        this.dt = dt;
+    }
+
+    @Override
+    public void initialize() {
+        System.out.println("Stopped Driving.");
+        dt.stopDriving();
+    }
+
+    @Override
+    public boolean isFinished() {
+        return true;
+    }
+}
