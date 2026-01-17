@@ -148,6 +148,7 @@ public class RobotContainer {
 
   private void configurePathPlanner() {
     autoChooser.addOption("DriveForward", "DriveForward"); // Permanent choice
+    autoChooser.addOption("New1", "New1");
 }
 
 public void startAutonomous() {
@@ -156,6 +157,10 @@ public void startAutonomous() {
   if (auto.equals("DriveForward")) { // For testing
     start = new SequentialCommandGroup(
         getAutonomousCommand("DriveForward", true));
+    start.schedule();
+  } else if (auto.equals("New1")) { // For testing
+    start = new SequentialCommandGroup(
+        getAutonomousCommand("New1", true));
     start.schedule();
   } else {
     System.err.println("Invalid auto routine specified");
