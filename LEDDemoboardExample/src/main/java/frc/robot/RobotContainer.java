@@ -22,7 +22,7 @@ import frc.robot.commands.*; // imports everything in the commands folder
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private final LightSubsystem m_lightSubsystem = new LightSubsystem();
-    private final CycleLED cycleLED = new CycleLED(m_lightSubsystem);
+    private final HubActivity cycleLED = new HubActivity(m_lightSubsystem);
     private final RainbowLED rainbowLED = new RainbowLED(m_lightSubsystem);
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
