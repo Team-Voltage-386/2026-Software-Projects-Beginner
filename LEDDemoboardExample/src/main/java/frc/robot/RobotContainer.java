@@ -22,8 +22,9 @@ import frc.robot.commands.*; // imports everything in the commands folder
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private final LightSubsystem m_lightSubsystem = new LightSubsystem();
-    private final HubActivity cycleLED = new HubActivity(m_lightSubsystem);
+    private final CycleLED cycleLED = new CycleLED(m_lightSubsystem);
     private final RainbowLED rainbowLED = new RainbowLED(m_lightSubsystem);
+    private final HubActivity hubActivity = new HubActivity(m_lightSubsystem);
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private final CommandXboxController m_driverController = new CommandXboxController(
@@ -65,6 +66,7 @@ public class RobotContainer {
 
         // Note: the setAllBlue command doesn't run when disabled.
         m_driverController.x().toggleOnTrue(rainbowLED);
+        m_driverController.b().onTrue(hubActivity); // Not sure this will work. Hope for the best!
 
     }
 
@@ -82,4 +84,11 @@ public class RobotContainer {
     public boolean areLightsOn() {
         return m_lightSubsystem.areLightsOn();
     }
+    public boolean isHubActive() {
+        return hubActivity.hubIsActive();
+    }
+    public HubActivity getHubActivityCommand() {
+        return hubActivity;
+    }
+
 }
