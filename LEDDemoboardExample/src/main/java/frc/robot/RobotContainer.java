@@ -90,5 +90,8 @@ public class RobotContainer {
     public HubActivity getHubActivityCommand() {
         return hubActivity;
     }
+    public void setIsAheadHub(boolean setTo) {
+        getHubActivityCommand().setIsAhead(setTo);
+    }
 
 }

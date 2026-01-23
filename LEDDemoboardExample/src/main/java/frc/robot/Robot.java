@@ -4,12 +4,14 @@
 
 package frc.robot;
 
+import java.util.Optional;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.HubActivity;
-import frc.robot.subsystems.LightSubsystem;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -105,7 +107,31 @@ public class Robot extends TimedRobot {
     /** This function is called periodically during operator control. */
     @Override
     public void teleopPeriodic() {
-
+        String gameData = DriverStation.getGameSpecificMessage();
+        Optional<Alliance> ourTeam = DriverStation.getAlliance();
+        if (!(gameData == "")) {
+            if (gameData == "B") {
+                switch (ourTeam.get()) {
+                    case Red: 
+                        m_robotContainer.setIsAheadHub(false);
+                        break;
+                    case Blue:
+                        m_robotContainer.setIsAheadHub(true);
+                }
+            }
+            else {
+                switch (ourTeam.get()) {
+                    case Red:
+                        m_robotContainer.setIsAheadHub(true);
+                        break;
+                    case Blue:
+                        m_robotContainer.setIsAheadHub(false);
+                }
+            }
+        }
+        else {
+            System.out.println("Game data not announced");
+        }
     }
 
     @Override

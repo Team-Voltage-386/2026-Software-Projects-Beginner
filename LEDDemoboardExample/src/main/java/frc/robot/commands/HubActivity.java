@@ -6,7 +6,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.LightSubsystem;
 
 /** 
@@ -19,11 +18,11 @@ public class HubActivity extends Command {
   private LightSubsystem LightSubsystem;
   private int counter = 0; // counter starts at 0
   private boolean hubIsActive = true;
-  private boolean isAutoAhead = true; // This is a placeholder. Replace with logic to determine whether we are actually ahead! (Even though we totally will be every time)
+  private boolean isAutoAhead = false; // Will be replaced by actual value when value is recieved during the match.
 
   // prerecorded times for hub activity. Each time the timer reaches the value in the array, the hub toggles activity states.
-  private int[] timesWinning = {20, 50, 80, 110}; // Test values only so far. Will replace with actual values.
-  private int[] timesLosing = {50, 80, 110, 140};
+  private final int[] timesWinning = {30, 55, 80, 105}; // Now has been replaced by actual values.
+  private final int[] timesLosing = {55, 80, 105, 130};
 
   /**
    * Constructor for the CycleLED Command class.
@@ -52,12 +51,18 @@ public class HubActivity extends Command {
           hubIsActive = !hubIsActive;
           System.out.println("Hub is " + hubIsActive);
         }
+        if (timer.get() + 3 > timesWinning[counter]) {
+          // Add rumble logic here
+        }
       }
     else {
       if (timer.get() > timesLosing[counter]) {
         counter++;
         hubIsActive = !hubIsActive;
         System.out.println("Hub is " + hubIsActive);
+      }
+      if (timer.get() + 3 > timesLosing[counter]) {
+        // Add rumble logic here
       }
     }
     if (hubIsActive) {
@@ -82,5 +87,7 @@ public class HubActivity extends Command {
   public boolean hubIsActive() {
     return hubIsActive;
   }
-
+  public void setIsAhead(boolean setTo) {
+    isAutoAhead = setTo;
+  }
 }
