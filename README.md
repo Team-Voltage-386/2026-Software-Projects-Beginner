@@ -11,6 +11,6 @@ Many of these projects have history however that history is still within the 202
     * The Elastic dashboard includes display of what the motor is currently doing as well as allowing the user to change the voltage.
 
 * `LEDDemoboardExample`
-    *  An example project about how to use LEDs on the demo-board.
+    *  An example project about how to use LEDs on the demo-board. * This is where the updated code is!
 * `Simulation-Robot`
     *  An example project with a simulated swerve drive.  It illustrates how to use PathPlanner, AdvantageScope as well as the simulator. Details on how to get it running can be found in Programming Like a Varmint in the Software folder on the team Drive
