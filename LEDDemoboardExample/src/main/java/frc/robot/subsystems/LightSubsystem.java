@@ -20,7 +20,7 @@ public class LightSubsystem extends SubsystemBase {
      * This should be 10 for the briefcase bot.
      * This should be 76 for the Demoboard.
      */
-    private static final int kLedLength = 10;
+    private static final int kLedLength = 76;
 
     AddressableLED led = new AddressableLED(kLedPort);
 
