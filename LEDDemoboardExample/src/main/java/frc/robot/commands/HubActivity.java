@@ -6,7 +6,9 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.LightSubsystem;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 
 /** 
  * Will display whether the hub is active at a given time.
@@ -16,22 +18,24 @@ public class HubActivity extends Command {
 
   private final Timer timer = new Timer();
   private LightSubsystem LightSubsystem;
+  private CommandXboxController m_controller;
   private int counter = 0; // counter starts at 0
   private boolean hubIsActive = true;
   private boolean isAutoAhead = false; // Will be replaced by actual value when value is recieved during the match.
 
   // prerecorded times for hub activity. Each time the timer reaches the value in the array, the hub toggles activity states.
-  private final int[] timesWinning = {30, 55, 80, 105}; // Now has been replaced by actual values.
-  private final int[] timesLosing = {55, 80, 105, 130};
+  private final int[] timesWinning = {130, 105, 80, 55, -10}; // Now has been replaced by actual values. (Actually I did it wrong, nvm)
+  private final int[] timesLosing = {105, 80, 55, 30, -10};
 
   /**
    * Constructor for the CycleLED Command class.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public HubActivity(LightSubsystem subsystem) {
+  public HubActivity(LightSubsystem subsystem, CommandXboxController m_controller) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.LightSubsystem = subsystem;
+    this.m_controller = m_controller;
     addRequirements(subsystem);
   }
 
@@ -45,24 +49,31 @@ public class HubActivity extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    System.out.println(timer.getMatchTime());
     if (isAutoAhead) {
-        if (timer.get() > timesWinning[counter]) {
+        if (timer.getMatchTime() < timesWinning[counter]) {
           counter++;
           hubIsActive = !hubIsActive;
+          m_controller.getHID().setRumble(RumbleType.kBothRumble, 0);
           System.out.println("Hub is " + hubIsActive);
         }
-        if (timer.get() + 3 > timesWinning[counter]) {
+        if (timer.getMatchTime() - 3 < timesWinning[counter]) {
           // Add rumble logic here
+          m_controller.getHID().setRumble(RumbleType.kBothRumble, 1);
+          System.out.println("Rumbling");
         }
       }
     else {
-      if (timer.get() > timesLosing[counter]) {
+      if (timer.getMatchTime() < timesLosing[counter]) {
         counter++;
         hubIsActive = !hubIsActive;
+        m_controller.getHID().setRumble(RumbleType.kBothRumble, 0);
         System.out.println("Hub is " + hubIsActive);
       }
-      if (timer.get() + 3 > timesLosing[counter]) {
+      if (timer.getMatchTime() - 3 < timesLosing[counter]) {
         // Add rumble logic here
+        m_controller.getHID().setRumble(RumbleType.kBothRumble, 1);
+        System.out.println("Rumbling");
       }
     }
     if (hubIsActive) {
@@ -82,7 +93,12 @@ public class HubActivity extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return counter >= 4; // Returns true when the game ends.
+    if (isAutoAhead) {
+    return counter >= timesWinning.length; // Returns true when the game ends.
+    }
+    else {
+      return counter >= timesLosing.length;
+    }
   }
   public boolean hubIsActive() {
     return hubIsActive;

@@ -24,11 +24,13 @@ public class RobotContainer {
     private final LightSubsystem m_lightSubsystem = new LightSubsystem();
     private final CycleLED cycleLED = new CycleLED(m_lightSubsystem);
     private final RainbowLED rainbowLED = new RainbowLED(m_lightSubsystem);
-    private final HubActivity hubActivity = new HubActivity(m_lightSubsystem);
+    
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private final CommandXboxController m_driverController = new CommandXboxController(
             OperatorConstants.kDriverControllerPort);
+
+    private final HubActivity hubActivity = new HubActivity(m_lightSubsystem, m_driverController);
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -54,7 +56,7 @@ public class RobotContainer {
     private void configureBindings() {
 
         // Turn the lights on when button pressed. Turn off when button is released
-       //m_driverController.b().onTrue(m_lightSubsystem.changeAllLEDColor(255, 0, 0));
+        //m_driverController.b().onTrue(m_lightSubsystem.changeAllLEDColor(255, 0, 0));
         //m_driverController.b().onFalse(m_lightSubsystem.changeAllLEDColor(0, 0, 0));
 
         // Turn the lights on when button held. Turn off when button is released
@@ -62,11 +64,10 @@ public class RobotContainer {
         //m_driverController.y().onFalse(m_lightSubsystem.changeAllLEDColor(0, 0, 0));
         
         // Cycle between 3 LED colors until interrupted
-        m_driverController.a().toggleOnTrue(cycleLED);
+        //m_driverController.a().toggleOnTrue(cycleLED);
 
         // Note: the setAllBlue command doesn't run when disabled.
-        m_driverController.x().toggleOnTrue(rainbowLED);
-        m_driverController.b().onTrue(hubActivity); // Not sure this will work. Hope for the best!
+        //m_driverController.x().toggleOnTrue(rainbowLED);
 
     }
 

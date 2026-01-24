@@ -84,7 +84,7 @@ public class Robot extends TimedRobot {
             m_autonomousCommand.schedule();
         }
         //HubActivity hubActivity = new HubActivity(new LightSubsystem());
-        m_robotContainer.getHubActivityCommand().schedule();
+        
     }
 
     /** This function is called periodically during autonomous. */
@@ -102,6 +102,7 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
+        m_robotContainer.getHubActivityCommand().schedule();
     }
 
     /** This function is called periodically during operator control. */
@@ -144,7 +145,7 @@ public class Robot extends TimedRobot {
     /** This function is called periodically during test mode. */
     @Override
     public void testPeriodic() {
-        System.out.println("Robot.testPeriodic()");
+        //System.out.println("Robot.testPeriodic()");
     }
 
     /** This function is called once when the robot is first started up. */
