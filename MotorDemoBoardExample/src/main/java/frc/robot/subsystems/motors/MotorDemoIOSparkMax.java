@@ -14,10 +14,12 @@ import java.util.function.DoubleSupplier;
 
 public class MotorDemoIOSparkMax implements MotorDemoIO {
   private SparkMax mainMotor;
+  private double voltageAttenuation;
 
   /* Constructor */
-  public MotorDemoIOSparkMax(int deviceID) {
+  public MotorDemoIOSparkMax(int deviceID, double attenuation) {
     mainMotor = new SparkMax(deviceID, MotorType.kBrushless);
+    voltageAttenuation = attenuation;
   }
 
   @Override
@@ -27,14 +29,14 @@ public class MotorDemoIOSparkMax implements MotorDemoIO {
 
   @Override
   public void setVoltage(double motorVolts) {
-    mainMotor.setVoltage(motorVolts);
+    mainMotor.setVoltage(motorVolts * voltageAttenuation);
   }
 
   @Override
   public void setVoltageWithDeadband(DoubleSupplier motorVolts, double deadbandVolts) {
     double motorDoubleValue = MathUtil.applyDeadband(motorVolts.getAsDouble(), deadbandVolts);
 
-    motorDoubleValue = motorDoubleValue * mainMotor.getBusVoltage();
+    motorDoubleValue = motorDoubleValue * mainMotor.getBusVoltage() * voltageAttenuation;
     mainMotor.setVoltage(motorDoubleValue);
   }
 }

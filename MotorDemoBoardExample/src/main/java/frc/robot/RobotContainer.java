@@ -40,17 +40,20 @@ public class RobotContainer {
   public RobotContainer() {
     switch (Constants.currentMode) {
       case REAL:
-        m_neomotor1 = new MotorDemo(new MotorDemoIOSparkFlex(MotorDemoConstants.devIDNEO1), "NEO1");
-        m_neomotor2 = new MotorDemo(new MotorDemoIOSparkFlex(MotorDemoConstants.devIDNEO2), "NEO2");
+        m_neomotor1 =
+            new MotorDemo(new MotorDemoIOSparkFlex(MotorDemoConstants.devIDNEO1, 0.02), "NEO1");
+        m_neomotor2 =
+            new MotorDemo(new MotorDemoIOSparkFlex(MotorDemoConstants.devIDNEO2, 0.50), "NEO2");
         m_vortexmotor1 =
-            new MotorDemo(new MotorDemoIOSparkMax(MotorDemoConstants.devIDVORTEX1), "VORTEX1");
+            new MotorDemo(
+                new MotorDemoIOSparkMax(MotorDemoConstants.devIDVORTEX1, 0.50), "VORTEX1");
         break;
 
       case SIM:
-        m_neomotor1 = new MotorDemo(new MotorDemoIOSim(MotorDemoConstants.devIDNEO1), "NEO1");
-        m_neomotor2 = new MotorDemo(new MotorDemoIOSim(MotorDemoConstants.devIDNEO2), "NEO2");
+        m_neomotor1 = new MotorDemo(new MotorDemoIOSim(MotorDemoConstants.devIDNEO1, 0.02), "NEO1");
+        m_neomotor2 = new MotorDemo(new MotorDemoIOSim(MotorDemoConstants.devIDNEO2, 0.50), "NEO2");
         m_vortexmotor1 =
-            new MotorDemo(new MotorDemoIOSim(MotorDemoConstants.devIDVORTEX1), "VORTEX1");
+            new MotorDemo(new MotorDemoIOSim(MotorDemoConstants.devIDVORTEX1, 0.50), "VORTEX1");
         break;
 
       case REPLAY:

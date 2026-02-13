@@ -13,11 +13,13 @@ import java.util.function.DoubleSupplier;
 public class MotorDemoIOSim implements MotorDemoIO {
   private double lastAppliedVolts;
   private int lastDeviceID;
+  private double voltageAttenuation;
 
   /* Constructor */
-  public MotorDemoIOSim(int deviceID) {
+  public MotorDemoIOSim(int deviceID, double attenuation) {
     lastDeviceID = deviceID;
     lastAppliedVolts = 0.0;
+    voltageAttenuation = attenuation;
   }
 
   @Override
@@ -27,14 +29,14 @@ public class MotorDemoIOSim implements MotorDemoIO {
 
   @Override
   public void setVoltage(double motorVolts) {
-    lastAppliedVolts = motorVolts;
+    lastAppliedVolts = motorVolts * voltageAttenuation;
   }
 
   @Override
   public void setVoltageWithDeadband(DoubleSupplier motorVolts, double deadbandVolts) {
     double motorDoubleValue = MathUtil.applyDeadband(motorVolts.getAsDouble(), deadbandVolts);
 
-    motorDoubleValue = motorDoubleValue * 12;
+    motorDoubleValue = motorDoubleValue * 12 * voltageAttenuation;
     lastAppliedVolts = motorDoubleValue;
   }
 
