@@ -11,7 +11,12 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.flywheel.Flywheel;
+import frc.robot.subsystems.flywheel.FlywheelIOSim;
+import frc.robot.subsystems.flywheel.FlywheelIOSparkFlex;
+import frc.robot.util.TuningUtil;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -23,13 +28,23 @@ public class RobotContainer {
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
 
+  // Subsystems
+  private Flywheel flywheel;
+
+  private double flywheelSpeed = 0;
+
+  TuningUtil setRPM = new TuningUtil("/Tuning/Flywheel/TestSetRPM", 0);
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     switch (Constants.currentMode) {
       case REAL:
+        flywheel = new Flywheel(new FlywheelIOSparkFlex());
+
         break;
 
       case SIM:
+        flywheel = new Flywheel(new FlywheelIOSim());
         break;
 
       case REPLAY:
@@ -50,6 +65,24 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    controller
+        .povUp()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  flywheelSpeed = flywheelSpeed + 1;
+                }));
+    controller
+        .povDown()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  flywheelSpeed = flywheelSpeed - 1;
+                }));
+    controller
+        .rightTrigger()
+        .whileTrue(new InstantCommand(() -> flywheel.setFlywheelSpeed(flywheelSpeed)));
+    controller.rightTrigger().onFalse(new InstantCommand(() -> flywheel.setFlywheelSpeed(0)));
     // controller.y().onTrue(Commands.runOnce(() -> motorSel = motorSel.next()));
 
     // controller.a().whileTrue(selectACommand);

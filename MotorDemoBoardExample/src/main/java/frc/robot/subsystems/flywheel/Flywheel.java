@@ -17,7 +17,7 @@ public class Flywheel extends SubsystemBase {
   public Flywheel(FlywheelIO io) {
     this.io = io;
 
-    io.setFlywheelVelocity(100);
+    io.setFlywheelVelocity(0);
   }
 
   public Command shootCommand(Supplier<Double> RPM) {
