@@ -85,8 +85,8 @@ public class RobotContainer {
     controller.rightTrigger().onFalse(new InstantCommand(() -> flywheel.setFlywheelSpeed(0)));
     // controller.y().onTrue(Commands.runOnce(() -> motorSel = motorSel.next()));
 
-    // controller.a().whileTrue(selectACommand);
-    // controller.b().whileTrue(selectBCommand);
+    controller.a().onTrue(new InstantCommand(() -> flywheel.setFlywheelSpeed(setRPM.getValue())));
+    controller.b().onTrue(new InstantCommand(() -> flywheel.setFlywheelSpeed(0)));
   }
 
   /**
