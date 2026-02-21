@@ -77,6 +77,7 @@ public class FlywheelIOSparkFlex implements FlywheelIO {
         .appliedOutputPeriodMs(20)
         .busVoltagePeriodMs(20)
         .outputCurrentPeriodMs(20);
+    flywheelConfig.inverted(true);
 
     tryUntilOk(
         5,
