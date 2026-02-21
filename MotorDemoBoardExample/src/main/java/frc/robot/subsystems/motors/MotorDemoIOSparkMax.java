@@ -39,4 +39,9 @@ public class MotorDemoIOSparkMax implements MotorDemoIO {
     motorDoubleValue = motorDoubleValue * mainMotor.getBusVoltage() * voltageAttenuation;
     mainMotor.setVoltage(motorDoubleValue);
   }
+
+  @Override
+  public double getPosition() {
+    return MathUtil.inputModulus(mainMotor.getEncoder().getPosition(), 0.0, 2 * Math.PI);
+  }
 }

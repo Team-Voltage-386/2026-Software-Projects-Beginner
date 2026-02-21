@@ -11,12 +11,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.subsystems.motors.*;
-import java.util.Map;
-import org.littletonrobotics.junction.networktables.LoggedNetworkString;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -27,33 +22,14 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkString;
 public class RobotContainer {
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
-  private Constants.MotorSelection motorSel = Constants.MotorSelection.NEO1;
-  private MotorDemo m_neomotor1;
-  private MotorDemo m_neomotor2;
-  private MotorDemo m_vortexmotor1;
-  private LoggedNetworkString loggedMotorSelection =
-      new LoggedNetworkString("Subsystems/ControllerMotorSelection");
-  private Command selectACommand;
-  private Command selectBCommand;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     switch (Constants.currentMode) {
       case REAL:
-        m_neomotor1 =
-            new MotorDemo(new MotorDemoIOSparkFlex(MotorDemoConstants.devIDNEO1, 0.02), "NEO1");
-        m_neomotor2 =
-            new MotorDemo(new MotorDemoIOSparkFlex(MotorDemoConstants.devIDNEO2, 0.50), "NEO2");
-        m_vortexmotor1 =
-            new MotorDemo(
-                new MotorDemoIOSparkMax(MotorDemoConstants.devIDVORTEX1, 0.50), "VORTEX1");
         break;
 
       case SIM:
-        m_neomotor1 = new MotorDemo(new MotorDemoIOSim(MotorDemoConstants.devIDNEO1, 0.02), "NEO1");
-        m_neomotor2 = new MotorDemo(new MotorDemoIOSim(MotorDemoConstants.devIDNEO2, 0.50), "NEO2");
-        m_vortexmotor1 =
-            new MotorDemo(new MotorDemoIOSim(MotorDemoConstants.devIDVORTEX1, 0.50), "VORTEX1");
         break;
 
       case REPLAY:
@@ -62,25 +38,6 @@ public class RobotContainer {
       default:
         break;
     }
-
-    // Define the selector logic
-    selectACommand =
-        new SelectCommand(
-            Map.ofEntries(
-                Map.entry(Constants.MotorSelection.NEO1, m_neomotor1.goFast()),
-                Map.entry(Constants.MotorSelection.NEO2, m_neomotor2.goFast()),
-                Map.entry(Constants.MotorSelection.VORTEX1, m_vortexmotor1.goFast())),
-            // This supplier determines which map entry to run
-            () -> motorSel);
-
-    selectBCommand =
-        new SelectCommand(
-            Map.ofEntries(
-                Map.entry(Constants.MotorSelection.NEO1, m_neomotor1.goMid()),
-                Map.entry(Constants.MotorSelection.NEO2, m_neomotor2.goMid()),
-                Map.entry(Constants.MotorSelection.VORTEX1, m_vortexmotor1.goMid())),
-            // This supplier determines which map entry to run
-            () -> motorSel);
 
     // Configure the button bindings
     configureButtonBindings();
@@ -93,32 +50,10 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    controller.y().onTrue(Commands.runOnce(() -> motorSel = motorSel.next()));
+    // controller.y().onTrue(Commands.runOnce(() -> motorSel = motorSel.next()));
 
-    controller.a().whileTrue(selectACommand);
-    controller.b().whileTrue(selectBCommand);
-
-    m_neomotor1.setDefaultCommand(
-        new ConditionalCommand(
-            m_neomotor1.goFromSupplier(() -> -controller.getLeftY()), // Runs if condition is true
-            m_neomotor1.goStop(), // Runs if condition is false
-            () -> motorSel == Constants.MotorSelection.NEO1 // The condition
-            ));
-
-    m_neomotor2.setDefaultCommand(
-        new ConditionalCommand(
-            m_neomotor2.goFromSupplier(() -> -controller.getLeftY()), // Runs if condition is true
-            m_neomotor2.goStop(), // Runs if condition is false
-            () -> motorSel == Constants.MotorSelection.NEO2 // The condition
-            ));
-
-    m_vortexmotor1.setDefaultCommand(
-        new ConditionalCommand(
-            m_vortexmotor1.goFromSupplier(
-                () -> -controller.getLeftY()), // Runs if condition is true
-            m_vortexmotor1.goStop(), // Runs if condition is false
-            () -> motorSel == Constants.MotorSelection.VORTEX1 // The condition
-            ));
+    // controller.a().whileTrue(selectACommand);
+    // controller.b().whileTrue(selectBCommand);
   }
 
   /**
@@ -130,7 +65,5 @@ public class RobotContainer {
     return Commands.none();
   }
 
-  public void updateNTValues() {
-    loggedMotorSelection.set(motorSel.name());
-  }
+  public void updateNTValues() {}
 }

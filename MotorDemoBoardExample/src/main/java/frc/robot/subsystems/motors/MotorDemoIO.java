@@ -24,4 +24,9 @@ public interface MotorDemoIO {
 
   /** Run open loop at the specified voltage with a deadband adjustment */
   public default void setVoltageWithDeadband(DoubleSupplier motorVolts, double deadbandVolts) {}
+
+  /** Run open loop at the specified voltage. */
+  public default double getPosition() {
+    return 0.0;
+  }
 }
