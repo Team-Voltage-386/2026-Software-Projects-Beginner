@@ -37,7 +37,7 @@ public class TurretIOSparkMax implements TurretIO {
 
   TuningUtil yawKp = new TuningUtil("/Tuning/turret/yawKp", 0.0);
   TuningUtil yawKd = new TuningUtil("/Tuning/turret/yawKd", 0.0);
-  TuningUtil hoodKp = new TuningUtil("/Tuning/turret/hoodKp", 0.0);
+  TuningUtil hoodKp = new TuningUtil("/Tuning/turret/hoodKp", 1.0);
   TuningUtil hoodKd = new TuningUtil("/Tuning/turret/hoodKd", 0.0);
 
   public TurretIOSparkMax() {
@@ -76,7 +76,8 @@ public class TurretIOSparkMax implements TurretIO {
         .busVoltagePeriodMs(20)
         .outputCurrentPeriodMs(20);
     hoodConfig.idleMode(IdleMode.kBrake).smartCurrentLimit(40).voltageCompensation(12.0);
-    hoodConfig.softLimit.forwardSoftLimit(0.74);
+    hoodConfig.inverted(true);
+
     tryUntilOk(
         5,
         () ->

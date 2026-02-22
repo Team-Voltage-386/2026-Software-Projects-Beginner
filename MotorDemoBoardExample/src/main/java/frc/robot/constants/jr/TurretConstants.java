@@ -5,7 +5,7 @@ import edu.wpi.first.math.util.Units;
 
 public class TurretConstants {
   public static final int turretYawCanId = 52;
-  public static final int turretPitchCanId = 45;
+  public static final int turretPitchCanId = 20;
   public static final double zeroRotRadians = 0;
 
   public static final double gearRatioPerRot = 1.0 / 22.57;

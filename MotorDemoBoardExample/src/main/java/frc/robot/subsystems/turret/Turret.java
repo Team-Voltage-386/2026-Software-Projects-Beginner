@@ -16,15 +16,13 @@ public class Turret extends SubsystemBase {
 
   private final Pose3d[] turretVisual = new Pose3d[2];
 
-  private final Supplier<Pose2d> dtPose;
   private Pose3d currentTargetPose = new Pose3d();
   private final Flywheel flywheel;
 
   private boolean autoAimEnabled = false;
 
-  public Turret(TurretIO io, Supplier<Pose2d> dtPose, Flywheel flywheel) {
+  public Turret(TurretIO io, Flywheel flywheel) {
     this.io = io;
-    this.dtPose = dtPose;
     this.flywheel = flywheel;
 
     io.setTurretPitch(Rotation2d.fromDegrees(62));
@@ -38,6 +36,8 @@ public class Turret extends SubsystemBase {
   public Command addYawCommand(Rotation2d deltaYaw) {
     return runOnce(() -> io.setTurretYaw(inputs.turretYaw.plus(deltaYaw)));
   }
+
+  private Rotation2d manualPitch = new Rotation2d(TurretConstants.turretMaxHoodAngle);
 
   public Command enableAutoAimCommand(Supplier<Pose3d> targetPose) {
     return runOnce(
@@ -55,26 +55,22 @@ public class Turret extends SubsystemBase {
     return runOnce(() -> io.setTurretPitch(new Rotation2d(Math.toRadians(pitchDeg.get()))));
   }
 
+  public Command manualIncrementPitch(Rotation2d deltaPitch) {
+    return runOnce(
+        () -> {
+          manualPitch = manualPitch.plus(deltaPitch);
+          if (manualPitch.getDegrees() > TurretConstants.turretMaxHoodAngle) {
+            manualPitch = Rotation2d.fromDegrees(TurretConstants.turretMaxHoodAngle);
+          } else if (manualPitch.getDegrees() < TurretConstants.turretMinHoodAngle) {
+            manualPitch = Rotation2d.fromDegrees(TurretConstants.turretMinHoodAngle);
+          }
+          io.setTurretPitch(manualPitch);
+        });
+  }
+
   @Override
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Shooter/Turret/Inputs", inputs);
-
-    Pose2d pose =
-        dtPose.get().plus(new Transform2d(TurretConstants.turretPosition, Rotation2d.kZero));
-    Translation3d dtPos3d =
-        new Translation3d(pose.getTranslation().getX(), pose.getTranslation().getY(), 0.5);
-    turretVisual[0] = new Pose3d(dtPos3d, new Rotation3d());
-    turretVisual[1] =
-        new Pose3d(
-            dtPos3d.plus(
-                new Translation3d(
-                    inputs.turretYaw.plus(pose.getRotation()).getCos() * 0.5,
-                    inputs.turretYaw.plus(pose.getRotation()).getSin() * 0.5,
-                    // TODO: this isn't accurate for high pitch angles
-                    inputs.turretPitch.getSin() * 0.65)),
-            new Rotation3d(dtPose.get().getRotation()));
-
-    Logger.recordOutput("Shooter/Turret/Visual", turretVisual);
   }
 }

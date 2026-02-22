@@ -7,15 +7,19 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.subsystems.flywheel.FlywheelIOSim;
 import frc.robot.subsystems.flywheel.FlywheelIOSparkFlex;
+import frc.robot.subsystems.turret.Turret;
+import frc.robot.subsystems.turret.TurretIOSparkMax;
 import frc.robot.util.TuningUtil;
 
 /**
@@ -30,21 +34,25 @@ public class RobotContainer {
 
   // Subsystems
   private Flywheel flywheel;
+  private Turret turret;
 
   private double flywheelSpeed = 0;
 
   TuningUtil setRPM = new TuningUtil("/Tuning/Flywheel/TestSetRPM", 0);
+  TuningUtil setDegrees = new TuningUtil("/Tuning/Turret/TestSetDegrees", 62);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     switch (Constants.currentMode) {
       case REAL:
         flywheel = new Flywheel(new FlywheelIOSparkFlex());
+        turret = new Turret(new TurretIOSparkMax(), flywheel);
 
         break;
 
       case SIM:
         flywheel = new Flywheel(new FlywheelIOSim());
+        turret = null;
         break;
 
       case REPLAY:
@@ -66,27 +74,47 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     controller
-        .povUp()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  flywheelSpeed = flywheelSpeed + 1;
-                }));
-    controller
-        .povDown()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  flywheelSpeed = flywheelSpeed - 1;
-                }));
-    controller
         .rightTrigger()
-        .whileTrue(new InstantCommand(() -> flywheel.setFlywheelSpeed(flywheelSpeed)));
+        .whileTrue(new InstantCommand(() -> flywheel.setFlywheelSpeed(setRPM.getValue())));
     controller.rightTrigger().onFalse(new InstantCommand(() -> flywheel.setFlywheelSpeed(0)));
-    // controller.y().onTrue(Commands.runOnce(() -> motorSel = motorSel.next()));
 
     controller.a().onTrue(new InstantCommand(() -> flywheel.setFlywheelSpeed(setRPM.getValue())));
     controller.b().onTrue(new InstantCommand(() -> flywheel.setFlywheelSpeed(0)));
+    controller.x().onTrue(turret.runOnce(() -> ((TurretIOSparkMax) turret.io).setHoodZero()));
+
+    controller.povUp().onTrue(turret.manualIncrementPitch(Rotation2d.fromDegrees(1)));
+    controller.povDown().onTrue(turret.manualIncrementPitch(Rotation2d.fromDegrees(-1)));
+
+    controller.leftTrigger().whileTrue(turret.adjustPitch(() -> setDegrees.getValue()));
+    controller.leftTrigger().onFalse(turret.adjustPitch(() -> 62.0));
+    controller
+        .povLeft()
+        .whileTrue(
+            new FunctionalCommand(
+                () -> {},
+                () -> {
+                  System.out.println("running at " + 1);
+                  ((TurretIOSparkMax) turret.io).testHoodVoltage(2);
+                },
+                (c) -> {
+                  ((TurretIOSparkMax) turret.io).testHoodVoltage(0);
+                },
+                () -> false,
+                flywheel));
+    controller
+        .povRight()
+        .whileTrue(
+            new FunctionalCommand(
+                () -> {},
+                () -> {
+                  System.out.println("running at " + 1);
+                  ((TurretIOSparkMax) turret.io).testHoodVoltage(-2);
+                },
+                (c) -> {
+                  ((TurretIOSparkMax) turret.io).testHoodVoltage(0);
+                },
+                () -> false,
+                flywheel));
   }
 
   /**
