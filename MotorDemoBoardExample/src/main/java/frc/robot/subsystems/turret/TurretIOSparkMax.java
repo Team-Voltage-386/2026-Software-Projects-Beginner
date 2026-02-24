@@ -37,7 +37,7 @@ public class TurretIOSparkMax implements TurretIO {
 
   TuningUtil yawKp = new TuningUtil("/Tuning/turret/yawKp", 0.0);
   TuningUtil yawKd = new TuningUtil("/Tuning/turret/yawKd", 0.0);
-  TuningUtil hoodKp = new TuningUtil("/Tuning/turret/hoodKp", 1.0);
+  TuningUtil hoodKp = new TuningUtil("/Tuning/turret/hoodKp", 0.5);
   TuningUtil hoodKd = new TuningUtil("/Tuning/turret/hoodKd", 0.0);
 
   public TurretIOSparkMax() {
@@ -66,7 +66,7 @@ public class TurretIOSparkMax implements TurretIO {
     yawEncoder.setPosition(0);
 
     hoodConfig = new SparkMaxConfig();
-    hoodConfig.encoder.uvwAverageDepth(4).positionConversionFactor(1).velocityConversionFactor(1);
+    hoodConfig.encoder.uvwAverageDepth(8).positionConversionFactor(1).velocityConversionFactor(1);
     hoodConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder).pid(0.0, 0.0, 0.0);
     hoodConfig
         .signals
@@ -75,7 +75,7 @@ public class TurretIOSparkMax implements TurretIO {
         .appliedOutputPeriodMs(20)
         .busVoltagePeriodMs(20)
         .outputCurrentPeriodMs(20);
-    hoodConfig.idleMode(IdleMode.kBrake).smartCurrentLimit(40).voltageCompensation(12.0);
+    hoodConfig.idleMode(IdleMode.kBrake).smartCurrentLimit(10).voltageCompensation(12.0);
     hoodConfig.inverted(true);
 
     tryUntilOk(

@@ -82,8 +82,8 @@ public class RobotContainer {
     controller.b().onTrue(new InstantCommand(() -> flywheel.setFlywheelSpeed(0)));
     controller.x().onTrue(turret.runOnce(() -> ((TurretIOSparkMax) turret.io).setHoodZero()));
 
-    controller.povUp().onTrue(turret.manualIncrementPitch(Rotation2d.fromDegrees(1)));
-    controller.povDown().onTrue(turret.manualIncrementPitch(Rotation2d.fromDegrees(-1)));
+    controller.povUp().onTrue(turret.manualIncrementPitch(Rotation2d.fromDegrees(-1)));
+    controller.povDown().onTrue(turret.manualIncrementPitch(Rotation2d.fromDegrees(1)));
 
     controller.leftTrigger().whileTrue(turret.adjustPitch(() -> setDegrees.getValue()));
     controller.leftTrigger().onFalse(turret.adjustPitch(() -> 62.0));
@@ -94,7 +94,7 @@ public class RobotContainer {
                 () -> {},
                 () -> {
                   System.out.println("running at " + 1);
-                  ((TurretIOSparkMax) turret.io).testHoodVoltage(2);
+                  ((TurretIOSparkMax) turret.io).testHoodVoltage(1.0);
                 },
                 (c) -> {
                   ((TurretIOSparkMax) turret.io).testHoodVoltage(0);
@@ -108,7 +108,7 @@ public class RobotContainer {
                 () -> {},
                 () -> {
                   System.out.println("running at " + 1);
-                  ((TurretIOSparkMax) turret.io).testHoodVoltage(-2);
+                  ((TurretIOSparkMax) turret.io).testHoodVoltage(-1.0);
                 },
                 (c) -> {
                   ((TurretIOSparkMax) turret.io).testHoodVoltage(0);
