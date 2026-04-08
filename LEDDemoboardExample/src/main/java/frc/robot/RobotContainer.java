@@ -23,6 +23,7 @@ public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private final LightSubsystem m_lightSubsystem = new LightSubsystem();
     private final CycleLED cycleLED = new CycleLED(m_lightSubsystem);
+    private final BlinkLED blinkLED = new BlinkLED(m_lightSubsystem);
     private final RainbowLED rainbowLED = new RainbowLED(m_lightSubsystem);
 
     // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -65,7 +66,9 @@ public class RobotContainer {
 
         // Note: the setAllBlue command doesn't run when disabled.
         m_driverController.x().toggleOnTrue(rainbowLED);
+        
 
+        m_driverController.b().toggleOnTrue(blinkLED);
     }
 
     /**
